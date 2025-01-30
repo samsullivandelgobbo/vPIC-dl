@@ -40,7 +40,7 @@ This tool facilitates the migration of the NHTSA's vPIC database, which contains
 ## Quick Start
 
 1. Clone the repository:
-   git clone https://github.com/yourusername/vpic-migration.git
+   git clone https://github.com/samsullivandelgobbo/vPIC-dl.git
    cd vpic-migration
 
 2. Install dependencies:
@@ -107,7 +107,6 @@ SQL_SERVER = {
     "trust_cert": "yes"
 }
 
-See [CONFIGURATION.md](docs/CONFIGURATION.md) for all available options.
 
 ## Data Structure
 
