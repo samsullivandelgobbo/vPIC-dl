@@ -1,0 +1,5 @@
+pyodbc>=5.0.1
+psycopg2-binary==2.9.9
+tqdm==4.66.1
+pytest==7.4.3  # For testing
+python-dotenv==1.0.0  # For configuration
