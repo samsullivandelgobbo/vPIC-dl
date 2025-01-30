@@ -31,42 +31,45 @@ This tool facilitates the migration of the NHTSA's vPIC database, which contains
 - Docker and Docker Compose
 - Make (optional, but recommended)
 
-### System Requirements
-
-- Storage: At least 10GB free space (varies based on data size)
-- Memory: Minimum 4GB RAM recommended
-- OS: Compatible with Linux, macOS, and Windows
 
 ## Quick Start
 
 1. Clone the repository:
+```
    git clone https://github.com/samsullivandelgobbo/vPIC-dl.git
    cd vpic-migration
-
+```
 2. Install dependencies:
    # On macOS
+```
    ./install_deps.sh
-
+```
    # On Windows / Linux
+```
    python -m venv .venv
    .venv\Scripts\activate
    pip install -r requirements.txt
+```
 
 3. Start the containers:
+```
    make start-containers
+```
 
 4. Run the migration:
-   make download
+```
+  make download
    make restore
    make migrate-pg
    make migrate-sqlite
    make verify-pg
    make backup
+```
 
    or
-
+```
    make all
-
+```
 ## Usage
 
 ### Basic Usage
@@ -74,30 +77,38 @@ This tool facilitates the migration of the NHTSA's vPIC database, which contains
 The simplest way to use the tool is through the provided Makefile commands:
 
 # Run all steps
+```
 make all
-
+```
 # Download latest vPIC data
+```
 make download
-
+```
 # Restore SQL Server backup
+```
 make restore
-
+```
 # Migrate to PostgreSQL
+```
 make migrate-pg
-
+```
 # Migrate to SQLite
+```
 make migrate-sqlite
-
+```
 # Verify migration
+```
 make verify
-
+```
 # Create backup
+```
 make backup
+```
 
 ## Configuration
 
 Configuration can be modified through environment variables or by editing vpic_migration/settings.py:
-
+```python
 SQL_SERVER = {
     "driver": "ODBC Driver 18 for SQL Server",
     "server": "localhost",
@@ -106,7 +117,7 @@ SQL_SERVER = {
     "password": "YourPassword",
     "trust_cert": "yes"
 }
-
+```
 
 ## Data Structure
 
