@@ -1,10 +1,10 @@
-# config/settings.py
+# src/settings.py
 import os
 from pathlib import Path
 
 # Base paths
 PROJECT_ROOT = Path(__file__).parent.parent
-TEMP_DATA_DIR = PROJECT_ROOT / "temp_data"
+TEMP_DATA_DIR = PROJECT_ROOT / "temp"
 MIGRATIONS_DIR = PROJECT_ROOT / "migrations"
 
 # Database configurations

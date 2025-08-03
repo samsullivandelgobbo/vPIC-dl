@@ -1,4 +1,4 @@
-# scripts/utils/database.py
+# src/database.py
 import pyodbc
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
@@ -41,7 +41,7 @@ class SQLServer(DatabaseConnection):
     def connect(self, database: str = "master", **kwargs) -> 'SQLServer':
         try:
             # Import settings here to avoid circular imports
-            from vpic_migration.settings import SQL_SERVER
+            from settings import SQL_SERVER
             
             # Use settings with override from kwargs
             conn_str = (

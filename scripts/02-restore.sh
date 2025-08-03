@@ -3,27 +3,32 @@ set -euo pipefail
 
 echo "Starting backup restoration process..."
 
-# Variables 
+# Load environment variables if .env exists
+if [ -f .env ]; then
+    source .env
+fi
 
-BACKUP_FILE="/var/opt/mssql/backup/VPICList_lite_2025_01.bak"
-SQL_USER="SA"
-SQL_PASSWORD="DevPassword123#"
+# Variables with defaults
+BACKUP_FILE="/var/opt/mssql/backup/VPICList_lite_2025_07.bak"
+SQL_USER="${MSSQL_USER:-SA}"
+SQL_PASSWORD="${MSSQL_SA_PASSWORD:-DevPassword123#}"
+SQL_CONTAINER="${SQL_CONTAINER:-vpic-sql}"
 
 # First, let's check if the backup file exists in the container
-docker exec sqltemp ls -l $BACKUP_FILE || {
+docker exec ${SQL_CONTAINER} ls -l $BACKUP_FILE || {
     echo "Error: Backup file not found in container"
     exit 1
 }
 
 # Get logical file names from backup
 echo "Getting logical file names from backup..."
-docker exec sqltemp /opt/mssql-tools18/bin/sqlcmd -S localhost \
+docker exec ${SQL_CONTAINER} /opt/mssql-tools18/bin/sqlcmd -S localhost \
     -U $SQL_USER -P $SQL_PASSWORD -C \
     -Q "RESTORE FILELISTONLY FROM DISK = '$BACKUP_FILE'"
 
 # Create restore command with correct logical file names
 echo "Restoring database..."
-docker exec sqltemp /opt/mssql-tools18/bin/sqlcmd -S localhost \
+docker exec ${SQL_CONTAINER} /opt/mssql-tools18/bin/sqlcmd -S localhost \
     -U $SQL_USER -P $SQL_PASSWORD -C \
     -Q "RESTORE DATABASE vpic 
         FROM DISK = '$BACKUP_FILE' 
@@ -33,7 +38,7 @@ docker exec sqltemp /opt/mssql-tools18/bin/sqlcmd -S localhost \
 
 # Verify restoration
 echo "Verifying database restoration..."
-docker exec sqltemp /opt/mssql-tools18/bin/sqlcmd -S localhost \
+docker exec ${SQL_CONTAINER} /opt/mssql-tools18/bin/sqlcmd -S localhost \
     -U $SQL_USER -P $SQL_PASSWORD -C \
     -Q "SELECT DB_NAME(database_id) as DatabaseName, 
         state_desc as Status 
@@ -42,7 +47,7 @@ docker exec sqltemp /opt/mssql-tools18/bin/sqlcmd -S localhost \
 
 # Get table counts and names
 echo "Getting database information..."
-docker exec sqltemp /opt/mssql-tools18/bin/sqlcmd -S localhost \
+docker exec ${SQL_CONTAINER} /opt/mssql-tools18/bin/sqlcmd -S localhost \
     -U $SQL_USER -P $SQL_PASSWORD -C \
     -d vpic \
     -Q "SELECT 

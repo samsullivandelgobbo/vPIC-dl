@@ -1,18 +1,18 @@
-# vpic_migration/migrate.py
+# src/migrate.py
 import logging
 import os
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional, Type
 from tqdm import tqdm
 
-from vpic_migration.database import (
+from database import (
     DatabaseConnection,
     SQLServer,
     PostgreSQL,
     SQLite,
     ensure_database
 )
-from vpic_migration.settings import (
+from settings import (
     SQL_TO_PG_TYPES,
     SQL_TO_SQLITE_TYPES,
     SQLITE
@@ -76,7 +76,11 @@ def create_target_tables(target_conn: DatabaseConnection, schema_info: Dict[str,
             
         for table_name, columns in schema_info.items():
             try:
-                create_stmt = f"CREATE TABLE IF NOT EXISTS {table_name} (\n"
+                # Drop table if it exists to ensure clean migration
+                drop_stmt = f"DROP TABLE IF EXISTS {table_name}"
+                target_conn.execute(drop_stmt)
+                
+                create_stmt = f"CREATE TABLE {table_name} (\n"
                 cols = []
 
                 for col_info in columns:

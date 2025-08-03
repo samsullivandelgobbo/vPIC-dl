@@ -1,11 +1,19 @@
 
+#!/bin/bash
 set -euo pipefail
 
-SQL_USER="SA"
-SQL_PASSWORD="DevPassword123#"
+# Load environment variables if .env exists
+if [ -f .env ]; then
+    source .env
+fi
+
+# Variables with defaults
+SQL_USER="${MSSQL_USER:-SA}"
+SQL_PASSWORD="${MSSQL_SA_PASSWORD:-DevPassword123#}"
+SQL_CONTAINER="${SQL_CONTAINER:-vpic-sql}"
 
 echo "Checking table details with proper row counts..."
-docker exec sqltemp /opt/mssql-tools18/bin/sqlcmd -S localhost \
+docker exec ${SQL_CONTAINER} /opt/mssql-tools18/bin/sqlcmd -S localhost \
     -U $SQL_USER -P $SQL_PASSWORD -C \
     -d vpic \
     -Q "
@@ -32,7 +40,7 @@ docker exec sqltemp /opt/mssql-tools18/bin/sqlcmd -S localhost \
     ORDER BY row_count DESC;"
 
 echo -e "\nChecking specific important tables..."
-docker exec sqltemp /opt/mssql-tools18/bin/sqlcmd -S localhost \
+docker exec ${SQL_CONTAINER} /opt/mssql-tools18/bin/sqlcmd -S localhost \
     -U $SQL_USER -P $SQL_PASSWORD -C \
     -d vpic \
     -Q "

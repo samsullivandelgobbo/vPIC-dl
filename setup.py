@@ -1,12 +1,13 @@
 # setup.py
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
-    name="vpic_migration",
+    name="vpic-pipeline",
     version="0.1.0",
-    description="vPIC Database Migration Tool",
+    description="vPIC Database Pipeline Tool",
     author="Sam",
-    packages=find_packages(),
+    py_modules=["migrate", "database", "settings"],
+    package_dir={"": "src"},
     python_requires=">=3.8",
     install_requires=[
         "pyodbc>=5.0.1",
@@ -18,7 +19,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "vpic-migrate=vpic_migration.migrate:main",
+            "vpic-pipeline=migrate:main",
         ],
     },
 )

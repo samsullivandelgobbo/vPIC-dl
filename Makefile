@@ -3,21 +3,24 @@
 
 # Variables
 BACKUP_NAME := vpic_postgres_$(shell date +%Y%m%d_%H%M%S)
-TEMP_DIR := temp_data
-SQL_CONTAINER := sqltemp
-PG_CONTAINER := pg_target
+TEMP_DIR := temp
+SQL_CONTAINER := vpic-sql
+PG_CONTAINER := vpic-postgres
 VENV := .venv
 PYTHON := $(VENV)/bin/python
 PIP := $(VENV)/bin/pip
 
 # Default target
-all: clean setup start-containers download restore migrate-pg verify backup
+all: clean setup start-containers download restore migrate-sqlite optimize compress verify backup
+
+# Complete SQLite pipeline
+sqlite-pipeline: clean setup start-containers download restore migrate-sqlite optimize compress
 
 # Clean environment
 clean:
 	@echo "Cleaning environment..."
-	docker-compose -f docker/docker-compose.yml down -v || true
-	rm -rf $(VENV) *.egg-info dist build __pycache__ vpic_migration/__pycache__
+	docker-compose down -v || true
+	rm -rf $(VENV) *.egg-info dist build __pycache__ src/__pycache__
 
 # Setup Python virtual environment
 $(VENV)/bin/activate: requirements.txt
@@ -36,30 +39,40 @@ install: setup
 # Start Docker containers
 start-containers:
 	@echo "Starting containers..."
-	docker-compose -f docker/docker-compose.yml up -d
+	docker-compose up -d
 	@echo "Waiting for containers to be ready..."
 	sleep 20
 
 # Download vPIC data
 download:
 	@echo "Downloading vPIC data..."
-	./scripts/download_vpic.sh
+	./scripts/01-download.sh
 
 # Restore SQL Server backup
 restore:
 	@echo "Restoring SQL Server backup..."
-	./scripts/restore_backup.sh
-	./scripts/verify_db.sh
+	./scripts/02-restore.sh
+	./scripts/03-verify.sh
 
 # Migrate to PostgreSQL
 migrate-pg: install
 	@echo "Migrating to PostgreSQL..."
-	TARGET_DB=postgres $(PYTHON) -m vpic_migration.migrate
+	cd src && TARGET_DB=postgres ../$(PYTHON) -m migrate
 
 # Migrate to SQLite
 migrate-sqlite: install
 	@echo "Migrating to SQLite..."
-	TARGET_DB=sqlite $(PYTHON) -m vpic_migration.migrate
+	cd src && TARGET_DB=sqlite ../$(PYTHON) -m migrate
+
+# Optimize SQLite database (remove unnecessary tables/data)
+optimize:
+	@echo "Optimizing SQLite database..."
+	./scripts/04-optimize.sh
+
+# Compress SQLite database
+compress:
+	@echo "Compressing SQLite database..."
+	./scripts/05-compress.sh
 
 # Verify migration
 verify-pg:

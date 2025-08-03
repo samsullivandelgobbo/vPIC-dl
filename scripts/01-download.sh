@@ -3,7 +3,7 @@
 set -euo pipefail
 
 VPIC_PAGE_URL="https://vpic.nhtsa.dot.gov/api/"
-DOWNLOAD_DIR="${DOWNLOAD_DIR:-temp_data}"
+DOWNLOAD_DIR="${DOWNLOAD_DIR:-temp}"
 
 mkdir -p "$DOWNLOAD_DIR"
 

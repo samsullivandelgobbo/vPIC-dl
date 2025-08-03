@@ -37,7 +37,7 @@ ENV/
 .settings/
 
 # Project specific
-temp_data/
+temp/
 *.bak
 *.bacpac
 *.dump
