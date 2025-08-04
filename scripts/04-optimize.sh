@@ -130,6 +130,7 @@ run_sql "Removing unused tables while keeping essential ones" "
 -- Turbo, Displacement, Cylinders
 -- Battery_Type, Charger_Level
 
+
 -- Remove safety feature tables (not used in VIN decoding)
 DROP TABLE IF EXISTS ABS;
 DROP TABLE IF EXISTS AdaptiveCruiseControl;
@@ -138,32 +139,15 @@ DROP TABLE IF EXISTS AirBagLocFront;
 DROP TABLE IF EXISTS AirBagLocKnee;
 DROP TABLE IF EXISTS AirBagLocations;
 DROP TABLE IF EXISTS AutoBrake;
-DROP TABLE IF EXISTS AutomaticPedestrainAlertingSound;
-DROP TABLE IF EXISTS AutoReverseSystem;
 DROP TABLE IF EXISTS BlindSpotIntervention;
 DROP TABLE IF EXISTS BlindSpotMonitoring;
-DROP TABLE IF EXISTS CAN_AACN;
-DROP TABLE IF EXISTS CombinedBrakingSystem;
-DROP TABLE IF EXISTS DaytimeRunningLight;
 DROP TABLE IF EXISTS DynamicBrakeSupport;
-DROP TABLE IF EXISTS ECS;
-DROP TABLE IF EXISTS EDR;
-DROP TABLE IF EXISTS ForwardCollisionWarning;
-DROP TABLE IF EXISTS KeylessIgnition;
-DROP TABLE IF EXISTS LaneCenteringAssistance;
 DROP TABLE IF EXISTS LaneDepartureWarning;
 DROP TABLE IF EXISTS LaneKeepSystem;
 DROP TABLE IF EXISTS ParkAssist;
-DROP TABLE IF EXISTS PedestrianAutomaticEmergencyBraking;
-DROP TABLE IF EXISTS Pretensioner;
-DROP TABLE IF EXISTS RearAutomaticEmergencyBraking;
 DROP TABLE IF EXISTS RearCrossTrafficAlert;
-DROP TABLE IF EXISTS RearVisibilityCamera;
 DROP TABLE IF EXISTS SeatBeltsAll;
-DROP TABLE IF EXISTS SemiautomaticHeadlampBeamSwitching;
 DROP TABLE IF EXISTS TPMS;
-DROP TABLE IF EXISTS TractionControl;
-DROP TABLE IF EXISTS WheelieMitigation;
 
 -- Remove specialized vehicle types we don't handle
 DROP TABLE IF EXISTS BusFloorConfigType;
@@ -173,30 +157,6 @@ DROP TABLE IF EXISTS MotorcycleChassisType;
 DROP TABLE IF EXISTS MotorcycleSuspensionType;
 DROP TABLE IF EXISTS TrailerBodyType;
 DROP TABLE IF EXISTS TrailerType;
-
--- Remove detailed technical specs not needed for basic decoding
-DROP TABLE IF EXISTS AxleConfiguration;
-DROP TABLE IF EXISTS BatteryType;
-DROP TABLE IF EXISTS BedType;
-DROP TABLE IF EXISTS BodyCab;
-DROP TABLE IF EXISTS BrakeSystem;
-DROP TABLE IF EXISTS ChargerLevel;
-DROP TABLE IF EXISTS CoolingType;
-DROP TABLE IF EXISTS Conversion;
-DROP TABLE IF EXISTS ElectrificationLevel;
-DROP TABLE IF EXISTS EngineConfiguration;
-DROP TABLE IF EXISTS EntertainmentSystem;
-DROP TABLE IF EXISTS EVDriveUnit;
-DROP TABLE IF EXISTS FuelDeliveryType;
-DROP TABLE IF EXISTS FuelTankMaterial;
-DROP TABLE IF EXISTS FuelTankType;
-DROP TABLE IF EXISTS GrossVehicleWeightRating;
-DROP TABLE IF EXISTS LowerBeamHeadlampLightSource;
-DROP TABLE IF EXISTS Steering;
-DROP TABLE IF EXISTS Transmission;
-DROP TABLE IF EXISTS Turbo;
-DROP TABLE IF EXISTS ValvetrainDesign;
-DROP TABLE IF EXISTS WheelBaseType;
 
 -- Remove redundant/unused schema tables
 DROP TABLE IF EXISTS DEFS_Body;
