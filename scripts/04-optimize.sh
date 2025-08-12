@@ -94,12 +94,16 @@ WHERE ElementId NOT IN (
         -- Vehicle characteristics (MUST KEEP)
         'Body Class', 'Body Style', 'Doors',
         'DriveType', 'Engine Model', 'Engine Configuration',
+        'Fuel Type - Secondary',
         'Fuel Type - Primary', 'Fuel Type', 'Transmission',
         -- Additional useful elements
         'Other Engine Info', 'Other Restraint System Info',
         'Turbo', 'Displacement (L)', 'Displacement (CC)',
         'Cylinders', 'Engine Manufacturer', 'Engine Power (KW)',
-        'Gross Vehicle Weight Rating', 'Brake System Type',
+        'Gross Vehicle Weight Rating',
+        'Gross Vehicle Weight Rating From',
+        'Gross Vehicle Weight Rating To',
+        'Brake System Type',
         'Battery Type', 'Battery Energy (kWh)', 'Charger Level',
         'Electric Range', 'Base Price (\$)', 'Trim Level'
     )
