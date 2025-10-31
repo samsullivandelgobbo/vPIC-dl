@@ -9,14 +9,26 @@ if [ -f .env ]; then
 fi
 
 # Variables with defaults
-BACKUP_FILE="/var/opt/mssql/backup/VPICList_lite_2025_07.bak"
+TEMP_DIR="${TEMP_DATA_DIR:-temp}"
 SQL_USER="${MSSQL_USER:-SA}"
 SQL_PASSWORD="${MSSQL_SA_PASSWORD:-DevPassword123#}"
 SQL_CONTAINER="${SQL_CONTAINER:-vpic-sql}"
 
-# First, let's check if the backup file exists in the container
+# Find the .bak file dynamically
+BAK_FILE=$(find "$TEMP_DIR" -name "VPICList_lite_*.bak" -type f | head -n 1)
+
+if [ -z "$BAK_FILE" ]; then
+    echo "Error: No .bak file found in $TEMP_DIR"
+    exit 1
+fi
+
+echo "Found backup file: $BAK_FILE"
+BACKUP_FILENAME=$(basename "$BAK_FILE")
+BACKUP_FILE="/var/opt/mssql/backup/$BACKUP_FILENAME"
+
+# Check if the backup file exists in the container
 docker exec ${SQL_CONTAINER} ls -l $BACKUP_FILE || {
-    echo "Error: Backup file not found in container"
+    echo "Error: Backup file not found in container at $BACKUP_FILE"
     exit 1
 }
 
