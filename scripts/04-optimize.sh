@@ -99,7 +99,7 @@ WHERE ElementId NOT IN (
         -- Additional useful elements
         'Other Engine Info', 'Other Restraint System Info',
         'Turbo', 'Displacement (L)', 'Displacement (CC)',
-        'Cylinders', 'Engine Manufacturer', 'Engine Power (KW)',
+        'Engine Number of Cylinders', 'Engine Manufacturer', 'Engine Power (KW)',
         'Gross Vehicle Weight Rating',
         'Gross Vehicle Weight Rating From',
         'Gross Vehicle Weight Rating To',

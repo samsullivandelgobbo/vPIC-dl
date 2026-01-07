@@ -32,20 +32,38 @@ docker exec ${SQL_CONTAINER} ls -l $BACKUP_FILE || {
     exit 1
 }
 
-# Get logical file names from backup
+# Get logical file names from backup dynamically
 echo "Getting logical file names from backup..."
-docker exec ${SQL_CONTAINER} /opt/mssql-tools18/bin/sqlcmd -S localhost \
-    -U $SQL_USER -P $SQL_PASSWORD -C \
-    -Q "RESTORE FILELISTONLY FROM DISK = '$BACKUP_FILE'"
+FILELIST_OUTPUT=$(docker exec ${SQL_CONTAINER} /opt/mssql-tools18/bin/sqlcmd -S localhost \
+    -U $SQL_USER -P $SQL_PASSWORD -C -h -1 -W \
+    -Q "SET NOCOUNT ON; RESTORE FILELISTONLY FROM DISK = '$BACKUP_FILE'")
 
-# Create restore command with correct logical file names
+echo "$FILELIST_OUTPUT"
+
+# Parse logical file names (first column, data file is type D, log file is type L)
+DATA_LOGICAL_NAME=$(echo "$FILELIST_OUTPUT" | grep -E "^\S+\s+.*\.mdf" | head -1 | awk '{print $1}')
+LOG_LOGICAL_NAME=$(echo "$FILELIST_OUTPUT" | grep -E "^\S+\s+.*\.ldf" | head -1 | awk '{print $1}')
+
+# Fallback to common names if parsing fails
+if [ -z "$DATA_LOGICAL_NAME" ]; then
+    DATA_LOGICAL_NAME="vPICList_Lite"
+    echo "Warning: Could not parse data file logical name, using fallback: $DATA_LOGICAL_NAME"
+fi
+if [ -z "$LOG_LOGICAL_NAME" ]; then
+    LOG_LOGICAL_NAME="vPICList_Lite_log"
+    echo "Warning: Could not parse log file logical name, using fallback: $LOG_LOGICAL_NAME"
+fi
+
+echo "Using logical file names: DATA=$DATA_LOGICAL_NAME, LOG=$LOG_LOGICAL_NAME"
+
+# Create restore command with dynamically extracted logical file names
 echo "Restoring database..."
 docker exec ${SQL_CONTAINER} /opt/mssql-tools18/bin/sqlcmd -S localhost \
     -U $SQL_USER -P $SQL_PASSWORD -C \
-    -Q "RESTORE DATABASE vpic 
-        FROM DISK = '$BACKUP_FILE' 
-        WITH MOVE 'vPICList_Lite1' TO '/var/opt/mssql/data/vpic.mdf',
-        MOVE 'vPICList_Lite1_log' TO '/var/opt/mssql/data/vpic_log.ldf',
+    -Q "RESTORE DATABASE vpic
+        FROM DISK = '$BACKUP_FILE'
+        WITH MOVE '$DATA_LOGICAL_NAME' TO '/var/opt/mssql/data/vpic.mdf',
+        MOVE '$LOG_LOGICAL_NAME' TO '/var/opt/mssql/data/vpic_log.ldf',
         REPLACE"
 
 # Verify restoration
