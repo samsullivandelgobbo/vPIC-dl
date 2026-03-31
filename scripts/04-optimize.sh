@@ -82,30 +82,32 @@ GROUP BY e.Name
 ORDER BY Pattern_Count DESC;"
 
 # Phase 3: Keep patterns for useful elements
+# NOTE: Element names must EXACTLY match NHTSA vPIC Element.Name values
 run_sql "Focusing Pattern table on valuable elements" "
-DELETE FROM Pattern 
+DELETE FROM Pattern
 WHERE ElementId NOT IN (
-    SELECT Id FROM Element 
+    SELECT Id FROM Element
     WHERE Name IN (
-        -- Core VIN elements (MUST KEEP)
-        'Model', 'Make', 'Series', 'Trim',
-        -- Plant information (MUST KEEP)
-        'Plant', 'Plant Country', 'Plant City', 'Plant State',
-        -- Vehicle characteristics (MUST KEEP)
-        'Body Class', 'Body Style', 'Doors',
-        'DriveType', 'Engine Model', 'Engine Configuration',
-        'Fuel Type - Secondary',
-        'Fuel Type - Primary', 'Fuel Type', 'Transmission',
-        -- Additional useful elements
+        -- Core VIN elements
+        'Make', 'Model', 'Series', 'Trim',
+        -- Plant information
+        'Plant Country', 'Plant City', 'Plant State', 'Plant Company Name',
+        -- Body & drivetrain
+        'Body Class', 'Doors', 'Drive Type',
+        -- Engine
+        'Engine Model', 'Engine Configuration', 'Engine Number of Cylinders',
+        'Engine Manufacturer', 'Engine Power (kW)', 'Engine Brake (hp) From',
+        'Displacement (L)', 'Displacement (CC)',
+        -- Fuel & transmission
+        'Fuel Type - Primary', 'Fuel Type - Secondary', 'Transmission Style',
+        -- Weight ratings
+        'Gross Vehicle Weight Rating From', 'Gross Vehicle Weight Rating To',
+        -- EV/Hybrid
+        'Battery Type', 'Battery Energy (kWh) From', 'Battery Energy (kWh) To',
+        'Charger Level', 'Electrification Level', 'EV Drive Unit',
+        -- Other
         'Other Engine Info', 'Other Restraint System Info',
-        'Turbo', 'Displacement (L)', 'Displacement (CC)',
-        'Engine Number of Cylinders', 'Engine Manufacturer', 'Engine Power (KW)',
-        'Gross Vehicle Weight Rating',
-        'Gross Vehicle Weight Rating From',
-        'Gross Vehicle Weight Rating To',
-        'Brake System Type',
-        'Battery Type', 'Battery Energy (kWh)', 'Charger Level',
-        'Electric Range', 'Base Price (\$)', 'Trim Level'
+        'Turbo', 'Brake System Type', 'Base Price (\$)'
     )
 );"
 
